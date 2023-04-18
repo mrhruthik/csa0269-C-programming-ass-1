@@ -1,0 +1,53 @@
+#include <stdio.h>
+
+#include <ctype.h>
+
+#define BUFFER_SIZE 1024
+
+int main() {
+    FILE *fp_in, *fp_out;
+    char filename_in[BUFFER_SIZE];
+    char filename_out[] = "statistics.txt";
+    char buffer[BUFFER_SIZE];
+    int frequency[26] = {0};
+    int c;
+
+  
+    printf("Enter the name of the file: ");
+    fgets(filename_in, BUFFER_SIZE, stdin);
+    filename_in[strcspn(filename_in, "\n")] = '\0';  // remove trailing newline character
+
+   
+    fp_in = fopen(filename_in, "r");
+    if (fp_in == NULL) {
+        printf("Error: cannot open the file.");
+        return 1;
+    }
+
+ 
+    while ((c = fgetc(fp_in)) != EOF) {
+        if (isalpha(c)) {
+            frequency[tolower(c) - 'a']++;
+        }
+    }
+
+  
+    fclose(fp_in);
+
+  
+    fp_out = fopen(filename_out, "w");
+    if (fp_out == NULL) {
+        printf("Error: cannot create the file.");
+        return 1;
+    }
+
+   
+    for (int i = 0; i < 26; i++) {
+        fprintf(fp_out, "%c: %d\n", 'a' + i, frequency[i]);
+    }
+
+   
+    fclose(fp_out);
+
+    return 0;
+}
